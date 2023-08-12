@@ -1,4 +1,4 @@
-def safe_print_division(a: float, b: float) -> float | None:
+def safe_print_division(a: int, b: int) -> float | None:
     result: float | None = None
     try:
         result = a / b
