@@ -1,11 +1,10 @@
-#!/usr/bin/python3
 """
     This is a base class
 """
 BaseGeometry = __import__('5-base_geometry').BaseGeometry
 class TypeMetaClass(type):
     """
-    This is a metaclass used to represent the class type inorder to eliminate
+    This is a metaclass used to represent the class type in order to eliminate
     the inherited method init subclass
     """
     def __dir__(cls):

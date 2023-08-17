@@ -6,8 +6,11 @@ class MetaGeometry(type):
 
     def __dir__(cls):
         """Magic method that allows you to override default dir"""
-        return (attribute for attribute in super().__dir__() if
-                attribute != '__init_subclass__')
+        return (
+            attribute
+            for attribute in super().__dir__()
+            if attribute != "__init_subclass__"
+        )
 
 
 class BaseGeometry(metaclass=MetaGeometry):
@@ -26,7 +29,7 @@ class BaseGeometry(metaclass=MetaGeometry):
             raise ValueError("{} must be greater than 0".format(name))
 
 
-class Rectangle(BaseGeometry):
+class Rectangle(BaseGeometry, metaclass=MetaGeometry):
     """class that inherits BaseGeometry"""
 
     def __init__(self, width, height):
@@ -34,8 +37,8 @@ class Rectangle(BaseGeometry):
         self.__width = width
         self.__height = height
         """Height and width are private"""
-        self.integer_validator('width', self.__width)
-        self.integer_validator('height', self.__height)
+        self.integer_validator("width", self.__width)
+        self.integer_validator("height", self.__height)
         """using the integer validator method for our variables"""
 
     def area(self):
@@ -47,11 +50,11 @@ class Rectangle(BaseGeometry):
         return "[Rectangle] {}/{}".format(self.__width, self.__height)
 
 
-class Square(Rectangle):
+class Square(Rectangle, metaclass=MetaGeometry):
     """class that inherits from rectangle"""
 
     def __init__(self, size):
         """instantiation with size"""
         self.__size = size
-        super().integer_validator('size', size)
+        super().integer_validator("size", size)
         super().__init__(size, size)
