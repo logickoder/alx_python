@@ -1,5 +1,5 @@
 """
-BaseGeometry class that throws an exception for area()
+BaseGeometry class that validates an integer
 """
 
 
@@ -42,3 +42,12 @@ class BaseGeometry(metaclass=TypeMetaClass):
         This method is not implemented
         """
         raise Exception("area() is not implemented")
+
+    def integer_validator(self, name, value):
+        """
+        This method validates that value is an integer
+        """
+        if type(value) is not int:
+            raise TypeError("{} must be an integer".format(name))
+        elif value <= 0:
+            raise ValueError("{} must be greater than 0".format(name))
