@@ -36,3 +36,9 @@ class BaseGeometry(metaclass=TypeMetaClass):
         return [
             attribute for attribute in attributes if attribute != "__init_subclass__"
         ]
+
+    def area(self):
+        """
+        This method is not implemented
+        """
+        raise Exception("area() is not implemented")
