@@ -1,35 +1,42 @@
-#!/usr/bin/env python3
-"""
-Script that lists all cities from the database hbtn_0e_4_usa
-"""
-
-import sys
+#!/usr/bin/python3
+# This module lists all cities in the database
+# imports module MySQLdb
 import MySQLdb
+import sys
 
-if __name__ == "__main__":
-    user = sys.argv[1]
+
+def main():
+    database_name = sys.argv[3]
+    username = sys.argv[1]
     password = sys.argv[2]
-    dbname = sys.argv[3]
 
-    db = MySQLdb.connect(
-        host="localhost",
-        port=3306,
-        user=user,
-        passwd=password,
-        db=dbname
-    )
+    # Connecting to database in the localhost
+    database = MySQLdb.connect(host='localhost', user=username,
+                               passwd=password, db=database_name,
+                               port=3306)
 
-    cursor = db.cursor()
+    # create a cursor
+    cur = database.cursor()
 
-    cursor.execute("""SELECT cities.id, cities.name, states.name
-                      FROM cities
-                      JOIN states ON cities.state_id = states.id
-                      ORDER BY cities.id ASC""")
+    # finding all the cities in the database
+    query = ("SELECT cities.id, cities.name, states.name "
+             "FROM cities, states "
+             "WHERE state_id = states.id "
+             "ORDER BY cities.id ASC")
+    # executing the query
+    cur.execute(query)
 
-    rows = cursor.fetchall()
-
+    # obtaining the results
+    rows = cur.fetchall()
     for row in rows:
         print(row)
 
-    cursor.close()
-    db.close()
+    # close cursor
+    cur.close()
+
+    # close database
+    database.close()
+
+
+if __name__ == "__main__":
+    main()

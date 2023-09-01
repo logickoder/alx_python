@@ -1,37 +1,43 @@
 #!/usr/bin/python3
-"""
-Script that takes in arguments and displays all values in the states
-table of hbtn_0e_0_usa where name matches the argument.
-But this time, write one that is safe from MySQL injections!
-"""
-
+# This script filters all states where name matches argument
+# imports module MySQLdb
 import MySQLdb
 import sys
 
-if __name__ == "__main__":
-    # Get command line arguments
-    mysql_username = sys.argv[1]
-    mysql_password = sys.argv[2]
+
+def main():
     database_name = sys.argv[3]
-    state_name = sys.argv[4]
+    username = sys.argv[1]
+    password = sys.argv[2]
+    name_searched = sys.argv[4]
 
-    # Connect to MySQL server
-    db = MySQLdb.connect(host="localhost", port=3306,
-                         user=mysql_username, passwd=mysql_password,
-                         db=database_name)
+    # Connecting to database in the localhost
+    database = MySQLdb.connect(host='localhost', user=username,
+                               passwd=password, db=database_name,
+                               port=3306)
 
-    # Create a cursor object to execute queries
-    cursor = db.cursor()
+    # create a cursor
+    cur = database.cursor()
 
-    # Execute SQL query with safe parameterization
-    cursor.execute("SELECT * FROM states WHERE name = %s ORDER BY id ASC",
-                   (state_name,))
+    # using a parameterized query
+    query = ("SELECT * FROM states "
+             "WHERE name = %s"
+             "ORDER BY id ASC")
 
-    # Fetch all the rows and display the results
-    rows = cursor.fetchall()
+    # Execute the query with name searched as parameter
+    cur.execute(query, (name_searched,))
+
+    # obtaining the results
+    rows = cur.fetchall()
     for row in rows:
         print(row)
 
-    # Close cursor and database connection
-    cursor.close()
-    db.close()
+    # close cursor
+    cur.close()
+
+    # close database
+    database.close()
+
+
+if __name__ == "__main__":
+    main()
