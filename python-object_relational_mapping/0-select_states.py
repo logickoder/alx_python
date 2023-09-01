@@ -1,37 +1,36 @@
-#!/usr/bin/python3
-# This module lists all states in the database
-# imports module MySQLdb
-import MySQLdb
 import sys
+import MySQLdb
 
 
 def main():
-    database_name = sys.argv[3]
     username = sys.argv[1]
     password = sys.argv[2]
+    database = sys.argv[3]
 
-    # Connecting to database in the localhost
-    database = MySQLdb.connect(host='localhost', user=username,
-                               passwd=password, db=database_name,
-                               port=3306)
+    connection_params = {
+        "host": "localhost",
+        "user": username,
+        "passwd": password,
+        "db": database,
+        "port": 3306,
+    }
 
-    # create a cursor
-    cur = database.cursor()
+    try:
+        db = MySQLdb.connect(**connection_params)
+        cur = db.cursor()
 
-    # finding all the states in the database
-    cur.execute("SELECT * FROM states ORDER BY states.id")
+        cur.execute("SELECT * FROM states ORDER BY states.id")
+        rows = cur.fetchall()
+        for row in rows:
+            print(row)
 
-    # obtaining the results
-    rows = cur.fetchall()
-    for row in rows:
-        print(row)
-
-    # close cursor
-    cur.close()
-
-    # close database
-    database.close()
-
+    except MySQLdb.Error as e:
+        print("Error:", e)
+    finally:
+        if cur:
+            cur.close()
+        if db:
+            db.close()
 
 if __name__ == "__main__":
     main()

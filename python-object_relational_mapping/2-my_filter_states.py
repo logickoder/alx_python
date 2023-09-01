@@ -1,42 +1,44 @@
-#!/usr/bin/python3
-# This script filters all states where name matches argument
-# imports module MySQLdb
-import MySQLdb
 import sys
+import MySQLdb
 
 
 def main():
-    database_name = sys.argv[3]
     username = sys.argv[1]
     password = sys.argv[2]
-    name_searched = sys.argv[4]
+    database = sys.argv[3]
+    state = sys.argv[4]
 
-    # Connecting to database in the localhost
-    database = MySQLdb.connect(host='localhost', user=username,
-                               passwd=password, db=database_name,
-                               port=3306)
+    connection_params = {
+        "host": "localhost",
+        "user": username,
+        "passwd": password,
+        "db": database,
+        "port": 3306,
+    }
 
-    # create a cursor
-    cur = database.cursor()
+    try:
+        db = MySQLdb.connect(**connection_params)
+        cur = db.cursor()
 
-    # finding all the states in the database beginning with N
-    cur.execute("SELECT * FROM states "
-                "WHERE name = '{}' AND "
-                "name LIKE 'N%' AND "
-                "BINARY name NOT LIKE 'n%'"
-                "ORDER BY id ASC".format(name_searched))
+        query = (
+            "SELECT * FROM states WHERE BINARY name LIKE"
+            "'{}' ORDER BY states.id ASC"
+        ).format(state)
 
-    # obtaining the results
-    rows = cur.fetchall()
-    for row in rows:
-        print(row)
+        cur.execute(query)
 
-    # close cursor
-    cur.close()
+        rows = cur.fetchall()
 
-    # close database
-    database.close()
+        for row in rows:
+            print(row)
 
+    except MySQLdb.Error as e:
+        print("Error:", e)
+    finally:
+        if cur:
+            cur.close()
+        if db:
+            db.close()
 
 if __name__ == "__main__":
     main()

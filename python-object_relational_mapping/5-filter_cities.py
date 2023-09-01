@@ -1,47 +1,46 @@
-#!/usr/bin/python3
-# This script filters all cities where name matches state
-# imports module MySQLdb
-import MySQLdb
 import sys
+import MySQLdb
 
 
 def main():
-    database_name = sys.argv[3]
     username = sys.argv[1]
     password = sys.argv[2]
+    database = sys.argv[3]
     state_name = sys.argv[4]
 
-    # Connecting to database in the localhost
-    database = MySQLdb.connect(host='localhost', user=username,
-                               passwd=password, db=database_name,
-                               port=3306)
+    connection_params = {
+        "host": "localhost",
+        "user": username,
+        "passwd": password,
+        "db": database,
+        "port": 3306,
+    }
 
-    # create a cursor
-    cur = database.cursor()
+    try:
+        db = MySQLdb.connect(**connection_params)
+        cur = db.cursor()
 
-    # using a parameterized query
-    query = ("SELECT cities.name FROM cities "
-             "JOIN states ON cities.state_id = states.id "
-             "WHERE %s = states.name "
-             "ORDER BY cities.id ASC")
+        query = """
+        SELECT cities.name
+        FROM cities
+        JOIN states ON cities.state_id = states.id
+        WHERE states.name = %s
+        ORDER BY cities.id ASC
+        """
+        cur.execute(query, (state_name,))
 
-    # Execute the query with name searched as parameter
-    cur.execute(query, (state_name,))
+        rows = cur.fetchall()
 
-    # obtaining the results
-    results = cur.fetchall()
+        city_names = [row[0] for row in rows]
+        print(", ".join(city_names))
 
-    # Extract city names and join them with commas
-    city_names = ", ".join(row[0] for row in results)
-
-    # Display the comma-separated city names
-    print(city_names)
-    # close cursor
-    cur.close()
-
-    # close database
-    database.close()
-
+    except MySQLdb.Error as e:
+        print("Error:", e)
+    finally:
+        if cur:
+            cur.close()
+        if db:
+            db.close()
 
 if __name__ == "__main__":
     main()

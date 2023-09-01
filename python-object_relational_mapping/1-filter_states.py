@@ -1,40 +1,39 @@
-#!/usr/bin/python3
-# This script filters all names of states that begin with an N
-# imports module MySQLdb
-import MySQLdb
 import sys
+import MySQLdb
 
 
 def main():
-    database_name = sys.argv[3]
     username = sys.argv[1]
     password = sys.argv[2]
+    database = sys.argv[3]
 
-    # Connecting to database in the localhost
-    database = MySQLdb.connect(host='localhost', user=username,
-                               passwd=password, db=database_name,
-                               port=3306)
+    connection_params = {
+        "host": "localhost",
+        "user": username,
+        "passwd": password,
+        "db": database,
+        "port": 3306,
+    }
 
-    # create a cursor
-    cur = database.cursor()
+    try:
+        db = MySQLdb.connect(**connection_params)
+        cur = db.cursor()
+        query = (
+            "SELECT * FROM states WHERE BINARY name LIKE"
+            "'N%' ORDER BY states.id ASC"
+        )
+        cur.execute(query)
+        rows = cur.fetchall()
+        for row in rows:
+            print(row)
 
-    # finding all the states in the database beginning with N
-    cur.execute("SELECT * FROM states "
-                "WHERE name LIKE 'N%' AND "
-                "BINARY name NOT LIKE 'n%'"
-                "ORDER BY states.id ASC ")
-
-    # obtaining the results
-    rows = cur.fetchall()
-    for row in rows:
-        print(row)
-
-    # close cursor
-    cur.close()
-
-    # close database
-    database.close()
-
+    except MySQLdb.Error as e:
+        print("Error:", e)
+    finally:
+        if cur:
+            cur.close()
+        if db:
+            db.close()
 
 if __name__ == "__main__":
     main()
