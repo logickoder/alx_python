@@ -18,9 +18,8 @@ Example:
 """
 
 import json
-import sys
-
 import requests
+import sys
 
 
 def export_employee_todo_progress_to_json(employee_id):
