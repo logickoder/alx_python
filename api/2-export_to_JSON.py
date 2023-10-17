@@ -17,10 +17,11 @@ Example:
     python script_name.py 2
 """
 
-
 import json
-import requests
 import sys
+
+import requests
+
 
 def export_employee_todo_progress_to_json(employee_id):
     """
@@ -31,7 +32,7 @@ def export_employee_todo_progress_to_json(employee_id):
     """
     # Construct the URL for the employee details
     employee_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    
+
     # Fetch employee details using an HTTP GET request
     employee_response = requests.get(employee_url)
 
@@ -46,7 +47,7 @@ def export_employee_todo_progress_to_json(employee_id):
 
     # Construct the URL for the employee's TODO list
     todos_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}/todos"
-    
+
     # Fetch the employee's TODO list using an HTTP GET request
     todos_response = requests.get(todos_url)
 
@@ -71,9 +72,10 @@ def export_employee_todo_progress_to_json(employee_id):
     with open(json_filename, 'w') as json_file:
         json.dump(json_data, json_file, indent=4)
 
+
 if __name__ == "__main__":
     # Extract the employee ID from the command-line argument
     employee_id = int(sys.argv[1])
-    
+
     # Call the function to export the employee's TODO progress to JSON
     export_employee_todo_progress_to_json(employee_id)

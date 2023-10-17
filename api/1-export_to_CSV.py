@@ -4,8 +4,9 @@
 """
 
 import csv
-import requests
 import sys
+
+import requests
 
 if __name__ == "__main__":
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
 
     employee_name = employee_data.get('name')
 
-    # Fetch employee's TODO list
+    # Fetch employee's todo list
     todo_url = "{}/users/{}/todos".format(base_url, employee_id)
     todo_response = requests.get(todo_url)
     todo_data = todo_response.json()

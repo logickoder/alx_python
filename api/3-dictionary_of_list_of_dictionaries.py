@@ -1,5 +1,7 @@
 import json
+
 import requests
+
 
 def fetch_employee_todo_progress(employee_id):
     # Fetch employee's TODO list
@@ -12,13 +14,14 @@ def fetch_employee_todo_progress(employee_id):
 
     return todos_response.json()
 
+
 def export_todo_all_employees_to_json():
     all_employee_data = {}
 
     # Fetch TODO progress for all employees (assuming employee IDs are consecutive integers)
     for employee_id in range(1, 11):  # Assuming 10 employees with IDs from 1 to 10
         todos_data = fetch_employee_todo_progress(employee_id)
-        
+
         # Fetch employee details
         employee_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
         employee_response = requests.get(employee_url)
@@ -46,6 +49,7 @@ def export_todo_all_employees_to_json():
     json_filename = "todo_all_employees.json"
     with open(json_filename, 'w') as json_file:
         json.dump(all_employee_data, json_file, indent=4)
+
 
 if __name__ == "__main__":
     export_todo_all_employees_to_json()
